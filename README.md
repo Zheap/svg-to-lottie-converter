@@ -41,6 +41,7 @@ Options:
 - `--compact`: produce compact JSON (no indentation)
 - `-o`, `--output-file`: alternative to positional output argument
 - `-q`, `--quiet`: suppress status output
+- `--embed-images`: embed images in the JSON
 
 Examples:
 ```bash
@@ -52,6 +53,9 @@ python src/cli.py src/file_copy.svg output/compact.json --compact
 
 # Convert with the optimized flow
 python src/cli.py src/file_copy.svg output/optimized.json --optimize
+
+# Convert and embed images
+python src/cli.py src/file_copy.svg output/embedded.json --embed-images
 ```
 
 The CLI will print conversion stats and save the result to the specified path. If no output filename is provided, it will save to `<input>.json`.
