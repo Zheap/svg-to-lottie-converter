@@ -5,9 +5,9 @@ from functools import wraps
 #import numpy as np 
 import copy
 
-from model import animation
-from model import *
-from utils.vector import NVector, Point
+from . import animation
+from ..utils.vector import NVector, Point
+
 
 from typing import List, Union, Any , Optional, TypeVar
 #from dataclasses import dataclass
@@ -459,12 +459,12 @@ class Bezier(BaseModel):
             return vert, tan
 
         for i, current in enumerate(self.vertices):
-            if not self.closed and (i == 0 or i == len(self.points) - 1):
-                cloned.points.append(self.points[i])
+            if not self.closed and (i == 0 or i == len(self.vertices) - 1):
+                cloned.add_point(self.vertices[i], Vector(0, 0), Vector(0, 0))
             else:
                 vert1, out_t = _get_vt(i - 1)
                 cloned.add_point(vert1, Vector(0, 0), out_t)
-                vert2, in_t = _get_vt((i+1) % len(self.points))
+                vert2, in_t = _get_vt((i+1) % len(self.vertices))
                 cloned.add_point(vert2, in_t, Vector(0, 0))
 
         return cloned

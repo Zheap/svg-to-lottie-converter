@@ -5,14 +5,16 @@ import math
 import numpy as np
 import matplotlib.colors as colors
 
-from utils.vector import NVector #as Vector
-from utils.transform import TransformMatrix
+from ...utils.vector import NVector #as Vector
+from ...utils.transform import TransformMatrix
 from .svgdata import color_table, css_atrrs
 
 
 
-from model import * 
-import model
+from ...model import * 
+from ...model import shapes
+from ... import model
+
 
 #__all__ = ['color_mode', 'Color']
 
@@ -220,12 +222,14 @@ def parse_color(color, current_color=cVector(0, 0, 0, 1)):
     match = re.match(r'rgb\((?:(\d{1,3}.?(?:\d{1,50}\%)?)(?:\,?)(\d{1,3}.?(?:\d{1,50}\%)?)(?:\,?)(\d{1,3}.?(?:\d{1,50}\%)?)(?:))\)', color)
     if match:
         match = re.findall('\d*\.?\d+',str(match))
-        #print ((int(match[2])/100)*255,(float(match[3])/100)*255,(float(match[4])/100)*255,1)
-        r = (float(match[2])/100)*255
-        g = (float(match[3])/100)*255
-        b = (float(match[4])/100)*255
-        #print (int(r)/255,int(g)/255,int(b)/255)
-        return cVector(r/255,g/255,b/255,1)
+        # Ensure we have at least 5 elements (indices 0-4) before accessing
+        if len(match) >= 5:
+            #print ((int(match[2])/100)*255,(float(match[3])/100)*255,(float(match[4])/100)*255,1)
+            r = (float(match[2])/100)*255
+            g = (float(match[3])/100)*255
+            b = (float(match[4])/100)*255
+            #print (int(r)/255,int(g)/255,int(b)/255)
+            return cVector(r/255,g/255,b/255,1)
 
     if color == "transparent":
         return cVector(0, 0, 0, 0)

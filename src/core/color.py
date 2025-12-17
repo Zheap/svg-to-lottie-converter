@@ -215,7 +215,7 @@ class Color:
         """Recompute the RGB values from HSB values."""
         r, g, b = colorsys.hsv_to_rgb(self._hue, self._saturation, self._brightness)
         self._red = r
-        self._greeen = g
+        self._green = g
         self._blue = b
 
     def _recompute_hsb(self):
@@ -250,12 +250,17 @@ class Color:
     __str__ = __repr__
 
     def __eq__(self, other):
+        if not isinstance(other, Color):
+            return False
         return all(math.isclose(sc, oc)
                    for sc, oc in zip(self.normalized, other.normalized))
 
     def __neq__(self, other):
+        if not isinstance(other, Color):
+            return True
         return not all(math.isclose(sc, oc)
                        for sc, oc in zip(self.normalized, other.normalized))
+
 
     @property
     def normalized(self):

@@ -31,8 +31,8 @@ def push_style():
     primitives._rect_mode = prev_rect_mode
     primitives._shape_mode = prev_shape_mode
 
-    color.prev_color_parse_mode = prev_color_mode
-    color.prev_color_range = prev_color_range
+    color.color_parse_mode = prev_color_mode
+    color.color_range = prev_color_range
 
 def pop_style():
     push_style()
