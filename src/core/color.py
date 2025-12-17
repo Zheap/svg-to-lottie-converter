@@ -97,7 +97,7 @@ def parse_color(*args, color_mode='RGB', normed=False, **kwargs):
     red = 0 
     green = 0 
     blue = 0 
-    alpha = 0
+    # alpha is already set above from kwargs
 
     if len(args) == 1:
         if isinstance(args[0], int) or isinstance(args[0], float):
@@ -255,7 +255,7 @@ class Color:
         return all(math.isclose(sc, oc)
                    for sc, oc in zip(self.normalized, other.normalized))
 
-    def __neq__(self, other):
+    def __ne__(self, other):
         if not isinstance(other, Color):
             return True
         return not all(math.isclose(sc, oc)
