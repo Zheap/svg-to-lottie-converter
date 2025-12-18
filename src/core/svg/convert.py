@@ -769,14 +769,21 @@ class Parser(Handler):
             svg.attrib.get(self.qualified("inkscape", "export-xdpi"), 96)
         )
 
-        if "width" in svg.attrib and "height" in svg.attrib:
+        # Prefer viewBox dimensions over width/height attributes
+        # CairoSVG on different platforms may output width/height with different units (pt vs px)
+        # but viewBox is always in user units (no unit suffix), making it more reliable
+        if "viewBox" in svg.attrib:
+            vb_parts = svg.attrib["viewBox"].split()
+            if len(vb_parts) >= 4:
+                animation.width = int(round(float(vb_parts[2])))
+                animation.height = int(round(float(vb_parts[3])))
+            elif "width" in svg.attrib and "height" in svg.attrib:
+                animation.width = int(round(self._parse_unit(svg.attrib["width"])))
+                animation.height = int(round(self._parse_unit(svg.attrib["height"])))
+        elif "width" in svg.attrib and "height" in svg.attrib:
             animation.width = int(round(self._parse_unit(svg.attrib["width"])))
             animation.height = int(
                 round(self._parse_unit(svg.attrib["height"]))
-            )
-        else:
-            _, _, animation.width, animation.height = map(
-                float, svg.attrib["viewBox"].split(" ")
             )
         animation.name = self._get_name(
             svg, self.qualified("sodipodi", "docname")
