@@ -149,7 +149,14 @@ class Parser(Handler):
             return element.attrib.get("id")
         return None
 
-    def _parse_unit(self, value):
+    def _parse_unit(self, value, dimension='width'):
+        """
+        Parse a value with CSS units and convert to pixels.
+        
+        Args:
+            value: The value to parse (can be number or string with unit)
+            dimension: Reference dimension for percentage values ('width' or 'height')
+        """
         if not isinstance(value, str):
             return value
 
@@ -188,6 +195,13 @@ class Parser(Handler):
         elif value.endswith("Q"):
             value = value[:-1]
             mult = self.dpi / cmin / 40
+        elif value.endswith("%"):
+            # Handle percentage values based on the specified dimension
+            value = value[:-1]
+            if dimension == 'height':
+                mult = self.animation.height * 0.01
+            else:
+                mult = self.animation.width * 0.01
 
         return float(value) * mult
 
@@ -485,23 +499,23 @@ class Parser(Handler):
 
     def _parseshape_rect(self, element, shape_parent, parent_style):
         rect = model.shapes.Rect()
-        w = self._parse_unit(element.attrib.get("width", 0))
-        h = self._parse_unit(element.attrib.get("height", 0))
+        w = self._parse_unit(element.attrib.get("width", 0), dimension='width')
+        h = self._parse_unit(element.attrib.get("height", 0), dimension='height')
 
         try:
-            x = self._parse_unit(element.attrib.get("x", 0)) + w / 2
+            x = self._parse_unit(element.attrib.get("x", 0), dimension='width') + w / 2
         except:
             x = 0 + w / 2
 
         try:
-            y = self._parse_unit(element.attrib.get("y", 0)) + h / 2
+            y = self._parse_unit(element.attrib.get("y", 0), dimension='height') + h / 2
         except:
             y = 0 + h / 2
 
         rect.position.value = Vector(x, y)
         rect.size.value = Vector(w, h)
-        rx = self._parse_unit(element.attrib.get("rx", 0))
-        ry = self._parse_unit(element.attrib.get("ry", 0))
+        rx = self._parse_unit(element.attrib.get("rx", 0), dimension='width')
+        ry = self._parse_unit(element.attrib.get("ry", 0), dimension='height')
         rect.rounded.value = (rx + ry) / 2
         self.add_shapes(element, [rect], shape_parent, parent_style)
         return rect
